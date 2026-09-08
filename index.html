@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-scale=1.0" />
+  <title>黑板·上的话 · 教师节</title>
+  <meta name="description" content="把心里话写下来，贴在老师的黑板上。" />
+
+  <!-- 字体：毛笔字 + 楷体 + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- ============ SVG 滤镜 ============ -->
+  <svg class="svg-defs" aria-hidden="true">
+    <defs>
+      <!-- 粉笔字：scale 调小让字更清晰 -->
+      <filter id="chalk" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="1" seed="3" />
+        <feDisplacementMap in="SourceGraphic" scale="0.6" />
+      </filter>
+      <!-- 黑板磨砂底纹 -->
+      <filter id="boardGrain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="5" />
+        <feColorMatrix values="0 0 0 0 0.95
+                                0 0 0 0 0.93
+                                0 0 0 0 0.85
+                                0 0 0 0.06 0" />
+      </filter>
+      <!-- 便签纸旧纸感 -->
+      <filter id="paper" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="1" />
+        <feDisplacementMap in="SourceGraphic" scale="0.4" />
+      </filter>
+      <!-- 印章：让红色不均匀 -->
+      <filter id="seal" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" />
+        <feDisplacementMap in="SourceGraphic" scale="1.2" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ============ 顶部栏：返回 + 标题 ============ -->
+  <div class="topbar" id="topbar" hidden>
+    <button class="topbar-btn" id="back-btn" title="返回" aria-label="返回">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="topbar-title" id="topbar-title">黑板·上的话</div>
+    <div class="topbar-spacer"></div>
+  </div>
+
+  <!-- ============ 1. 欢迎页 ============ -->
+  <section class="page active" id="page-welcome">
+    <div class="board-frame">
+      <div class="board">
+        <p class="verse verse-top" aria-hidden="true">三尺讲台一轮月</p>
+
+        <!-- 课题：醒目的红粉笔 -->
+        <p class="chalk-topic" data-subject="chinese" aria-hidden="true">今 日 课 题</p>
+
+        <!-- 角落氛围 -->
+        <p class="chalk-text chalk-tl-l" aria-hidden="true">9.10 · <strong>教 师 节</strong></p>
+        <button class="shuffle-btn" id="shuffle-btn" title="换一组">换 一 组</button>
+
+        <!-- 课程表（左下） -->
+        <div class="chalk-card card-bl" aria-hidden="true">
+          <div class="chalk-card-title">今 日 课 程</div>
+          <div class="chalk-card-item chalk-card-period"><span class="num">1</span><span class="subj"></span><span class="topic"></span></div>
+          <div class="chalk-card-item chalk-card-period"><span class="num">2</span><span class="subj"></span><span class="topic"></span></div>
+          <div class="chalk-card-item chalk-card-period"><span class="num">3</span><span class="subj"></span><span class="topic"></span></div>
+          <div class="chalk-card-item chalk-card-period"><span class="num">4</span><span class="subj"></span><span class="topic"></span></div>
+          <div class="chalk-card-item chalk-card-period"><span class="num">5</span><span class="subj"></span><span class="topic"></span></div>
+        </div>
+
+        <!-- 值日生（右下） -->
+        <div class="chalk-card card-br chalk-card-duty" aria-hidden="true">
+          <div class="chalk-card-title">今 日 值 日</div>
+          <div class="duty-line"></div>
+          <div class="duty-line"></div>
+        </div>
+
+        <!-- 学科涂鸦散落（随机内容） -->
+        <div class="chalk-subject" data-subject="math" style="top: 32%; left: 7%" aria-hidden="true"></div>
+        <div class="chalk-subject mono" data-subject="physics" style="top: 28%; right: 9%" aria-hidden="true"></div>
+        <div class="chalk-subject" data-subject="chemistry" style="top: 56%; left: 8%" aria-hidden="true"></div>
+        <div class="chalk-subject italic" data-subject="english" style="top: 48%; left: 9%" aria-hidden="true"></div>
+        <div class="chalk-subject" data-subject="chinese" style="top: 42%; right: 6%" aria-hidden="true"></div>
+        <div class="chalk-subject mono" data-subject="history" style="top: 64%; right: 8%" aria-hidden="true"></div>
+
+        <!-- 倒计时 + 作业 -->
+        <p class="chalk-countdown" style="top: 36%; left: 8%" aria-hidden="true"></p>
+        <p class="chalk-notice" style="top: 44%; left: 8%" aria-hidden="true"><span class="tag">作 业</span> <span class="notice-content"></span></p>
+
+        <div class="board-content">
+          <h1 class="chalk-title">黑板 · 上 的 话</h1>
+          <p class="chalk-subtitle">给 师 者 的 一 封 信</p>
+          <p class="chalk-tip">写下你心里的话<br/>贴在老师的黑板上</p>
+          <div class="welcome-actions">
+            <button class="chalk-btn" id="start-btn">提 笔</button>
+            <button class="chalk-btn-outline" id="view-existing-btn">看看写过的</button>
+          </div>
+        </div>
+
+        <p class="verse verse-bottom" aria-hidden="true">万卷诗书半盏灯</p>
+
+        <div class="seal" aria-hidden="true">师恩</div>
+        <div class="seal-corner" aria-hidden="true">赠</div>
+      </div>
+      <div class="chalk-tray" aria-hidden="true">
+        <span class="chalk-piece white"></span>
+        <span class="chalk-piece yellow"></span>
+        <span class="chalk-piece red"></span>
+        <span class="chalk-piece eraser"></span>
+      </div>
+    </div>
+    <p class="footer-mark">— 丙午年秋 · 致恩师 —</p>
+  </section>
+
+  <!-- ============ 2. 选择老师页 ============ -->
+  <section class="page" id="page-select">
+    <div class="board-frame">
+      <div class="board">
+        <p class="verse verse-top" aria-hidden="true">欲 寄 何 人</p>
+        <!-- 课题 -->
+        <p class="chalk-topic" data-subject="math" aria-hidden="true">今 日 课 题</p>
+        <!-- 角落氛围 -->
+        <p class="chalk-text chalk-bl-l" aria-hidden="true">桃 李 满 天 下</p>
+        <div class="chalk-doodle chalk-bl-r" aria-hidden="true">
+          <svg width="40" height="28" viewBox="0 0 40 28">
+            <path d="M4 6 L20 4 L20 24 L4 22 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+            <path d="M36 6 L20 4 L20 24 L36 22 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+            <line x1="20" y1="4" x2="20" y2="24" stroke="currentColor" stroke-width="0.6" opacity="0.5" />
+          </svg>
+        </div>
+        <!-- 学科涂鸦（随机） -->
+        <div class="chalk-subject" data-subject="math" style="top: 30%; right: 8%" aria-hidden="true"></div>
+        <div class="chalk-subject italic" data-subject="english" style="top: 50%; left: 6%" aria-hidden="true"></div>
+        <p class="chalk-countdown" style="top: 38%; right: 9%" aria-hidden="true"></p>
+        <div class="board-content">
+          <h2 class="chalk-title-sm">欲 寄 何 人</h2>
+          <p class="chalk-tip">挑 一 位 你 今 日 想 起 的</p>
+          <div class="teacher-grid" id="teacher-grid"></div>
+          <button class="chalk-btn-outline" id="add-teacher-btn">记 一 位</button>
+        </div>
+        <div class="seal seal-small" aria-hidden="true">念</div>
+      </div>
+      <div class="chalk-tray chalk-tray-deco" aria-hidden="true">
+        <div class="chalk-box">
+          <span class="mini-chalk" style="--c:#3a2818"></span>
+          <span class="mini-chalk" style="--c:#a83232"></span>
+          <span class="mini-chalk" style="--c:#2d5a8a"></span>
+          <span class="mini-chalk" style="--c:#6b4a8a"></span>
+          <span class="mini-chalk" style="--c:#8a6b1f"></span>
+        </div>
+        <div class="chalk-eraser">
+          <div class="eraser-handle"></div>
+          <div class="eraser-pad"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. 写下印象页 ============ -->
+  <section class="page" id="page-impression">
+    <div class="board-frame">
+      <div class="board">
+        <p class="verse verse-top" aria-hidden="true">欲 言 何 事</p>
+        <p class="chalk-topic" data-subject="english" aria-hidden="true">今 日 课 题</p>
+        <p class="chalk-text chalk-bl-l" aria-hidden="true">一 支 粉 笔 · <strong>写 人 生</strong></p>
+        <!-- 学科涂鸦（少一些，页面已满） -->
+        <div class="chalk-subject italic" data-subject="english" style="top: 36%; right: 6%" aria-hidden="true"></div>
+        <div class="chalk-subject" data-subject="chinese" style="bottom: 22%; left: 6%" aria-hidden="true"></div>
+        <div class="board-content">
+          <h2 class="chalk-title-sm" id="impression-teacher-name">给 老师 的话</h2>
+          <p class="chalk-tip">最 多 两 百 字 · 你 的 心 里 话</p>
+          <div class="notebook-paper">
+            <div class="chalk-input-wrap">
+              <textarea
+                id="keyword-input"
+                maxlength="200"
+                rows="4"
+                placeholder="您总是笑着讲题……"
+                spellcheck="false"
+              ></textarea>
+              <svg class="chalk-overlay" id="chalk-overlay" aria-hidden="true"></svg>
+            </div>
+            <!-- 表情 + 图片附件 -->
+            <div class="attach-row">
+              <div class="emoji-picker" id="emoji-picker" aria-label="表情"></div>
+              <label class="attach-upload" title="附一张图（贴纸/照片）">
+                <input type="file" id="image-input" accept="image/*" hidden />
+                <span class="attach-btn">＋图</span>
+              </label>
+              <div class="image-preview" id="image-preview" hidden>
+                <img id="image-preview-img" alt="预览" />
+                <button type="button" class="image-remove" id="image-remove-btn" title="移除图片">×</button>
+              </div>
+            </div>
+          </div>
+          <p class="chalk-tip">挑 一 张 信 纸</p>
+          <div class="paper-picker" id="color-picker"></div>
+          <!-- 署名 + 日期 -->
+          <div class="signature-row">
+            <input
+              type="text"
+              id="signature-input"
+              class="signature-input"
+              placeholder="署 名（可空）"
+              maxlength="10"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <span class="signature-date" id="signature-date"></span>
+          </div>
+          <button class="chalk-btn" id="submit-btn">落 笔</button>
+        </div>
+        <div class="seal seal-small" aria-hidden="true">寄</div>
+      </div>
+      <div class="chalk-tray" id="chalk-tray">
+        <!-- 粉笔盒：白色亚克力盒装满短小彩粉笔（9 种：含纯白/纯黑） -->
+        <div class="chalk-box" id="chalk-box" role="radiogroup" aria-label="选择粉笔颜色">
+          <button type="button" class="mini-chalk" data-color="#ffffff" style="--c:#ffffff" aria-label="纯白"></button>
+          <button type="button" class="mini-chalk" data-color="#1a1a1a" style="--c:#1a1a1a" aria-label="纯黑"></button>
+          <button type="button" class="mini-chalk" data-color="#3a2818" style="--c:#3a2818" aria-label="墨黑"></button>
+          <button type="button" class="mini-chalk" data-color="#a83232" style="--c:#a83232" aria-label="朱红"></button>
+          <button type="button" class="mini-chalk" data-color="#c8601f" style="--c:#c8601f" aria-label="橙"></button>
+          <button type="button" class="mini-chalk" data-color="#c89e1f" style="--c:#c89e1f" aria-label="暖黄"></button>
+          <button type="button" class="mini-chalk" data-color="#4a7a2f" style="--c:#4a7a2f" aria-label="草绿"></button>
+          <button type="button" class="mini-chalk" data-color="#2d5a8a" style="--c:#2d5a8a" aria-label="青蓝"></button>
+          <button type="button" class="mini-chalk" data-color="#6b4a8a" style="--c:#6b4a8a" aria-label="淡紫"></button>
+        </div>
+        <!-- 黑板擦：木把手+灰色绒面 -->
+        <div class="chalk-eraser" aria-hidden="true" title="黑板擦">
+          <div class="eraser-handle"></div>
+          <div class="eraser-pad"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. 黑板墙页 ============ -->
+  <section class="page" id="page-wall">
+    <div class="board-frame">
+      <div class="board">
+        <!-- 课题 -->
+        <p class="chalk-topic" data-subject="chemistry" aria-hidden="true">今 日 课 题</p>
+        <!-- 角落氛围 -->
+        <p class="chalk-text chalk-tl-r" aria-hidden="true">那 年 · 课 间</p>
+        <div class="chalk-doodle chalk-bl-l" aria-hidden="true">
+          <svg width="48" height="16" viewBox="0 0 50 16">
+            <rect x="2" y="2" width="46" height="12" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <line x1="20" y1="2" x2="20" y2="14" stroke="currentColor" stroke-width="0.8" opacity="0.45" />
+          </svg>
+        </div>
+        <!-- 学科涂鸦（随机） -->
+        <div class="chalk-subject mono" data-subject="chemistry" style="top: 30%; left: 8%" aria-hidden="true"></div>
+        <div class="chalk-subject italic" data-subject="geography" style="top: 32%; right: 8%" aria-hidden="true"></div>
+        <div class="chalk-subject" data-subject="biology" style="top: 50%; left: 9%" aria-hidden="true"></div>
+        <p class="chalk-countdown" style="top: 65%; right: 9%" aria-hidden="true"></p>
+        <div class="board-content wall-content">
+          <h2 class="chalk-title-sm wall-title" id="wall-teacher-name">老 师</h2>
+          <p class="chalk-stats" id="wall-stats">0 封 来 信</p>
+        </div>
+        <div class="notes-canvas" id="notes-canvas"></div>
+        <p class="wall-hint chalk-tip" id="wall-hint">点 看 · 拖 动 · 双 击 抹 去</p>
+        <!-- 快照（别人寄来的墙）模式：只读横幅 + 收下按钮 + 轻提示，默认隐藏 -->
+        <p class="wall-readonly-badge" id="wall-readonly-badge" hidden>这 是 寄 给 您 的 一 面 墙 · 只 读</p>
+        <button class="wall-save chalk-btn-mini" id="save-wall-btn" hidden title="收下这面墙，存进这台设备" aria-label="收下这面墙">存</button>
+        <p class="wall-toast" id="wall-toast" hidden aria-live="polite"></p>
+        <button class="wall-fab chalk-btn-mini" id="add-note-btn" title="再写一封" aria-label="再写一封">+</button>
+        <button class="wall-share chalk-btn-mini" id="share-btn" title="分享这一墙" aria-label="分享">↗</button>
+        <div class="seal seal-small wall-seal" aria-hidden="true">师</div>
+      </div>
+      <div class="chalk-tray" aria-hidden="true">
+        <span class="chalk-piece white"></span>
+        <span class="chalk-piece yellow"></span>
+        <span class="chalk-piece red"></span>
+        <span class="chalk-piece eraser"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 添加老师模态框 ============ -->
+  <div class="modal-mask" id="add-modal" hidden role="dialog" aria-modal="true" aria-labelledby="add-modal-title" aria-hidden="true" tabindex="-1">
+    <div class="modal chalk-modal">
+      <h3 id="add-modal-title">记 一 位</h3>
+      <input
+        type="text"
+        id="new-teacher-input"
+        placeholder="老 师 姓 名"
+        maxlength="10"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <div class="modal-actions">
+        <button class="chalk-btn-ghost" id="add-cancel-btn">收 起</button>
+        <button class="chalk-btn-small" id="add-confirm-btn">记 下</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 删除确认 ============ -->
+  <div class="modal-mask" id="delete-modal" hidden role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" aria-hidden="true" tabindex="-1">
+    <div class="modal chalk-modal small">
+      <h3 id="delete-modal-title">抹 去 这 一 封 ？</h3>
+      <p class="modal-quote" id="delete-quote"></p>
+      <div class="modal-actions">
+        <button class="chalk-btn-ghost" id="delete-cancel-btn">留 着</button>
+        <button class="chalk-btn-small" id="delete-confirm-btn">抹 去</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 删除老师确认 ============ -->
+  <div class="modal-mask" id="delete-teacher-modal" hidden role="dialog" aria-modal="true" aria-labelledby="delete-teacher-modal-title" aria-hidden="true" tabindex="-1">
+    <div class="modal chalk-modal small">
+      <h3 id="delete-teacher-modal-title">抹 去 这 一 位 ？</h3>
+      <p class="modal-quote" id="delete-teacher-quote"></p>
+      <p class="modal-tip" id="delete-teacher-hint"></p>
+      <div class="modal-actions">
+        <button class="chalk-btn-ghost" id="delete-teacher-cancel-btn">留 着</button>
+        <button class="chalk-btn-small" id="delete-teacher-confirm-btn">抹 去</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 分享模态框 ============ -->
+  <div class="modal-mask" id="share-modal" hidden role="dialog" aria-modal="true" aria-labelledby="share-modal-title" aria-hidden="true" tabindex="-1">
+    <div class="modal chalk-modal">
+      <h3 id="share-modal-title">分 享 这 一 墙</h3>
+      <p class="modal-quote" id="share-summary">这一墙的话</p>
+      <p class="modal-tip share-note" id="share-note"></p>
+      <div class="share-qr-wrap">
+        <img id="share-qr" class="share-qr-img" alt="二维码" width="180" height="180" />
+        <p class="qr-hint">扫码看看这面墙</p>
+      </div>
+      <div class="modal-actions share-actions">
+        <button class="chalk-btn-ghost" id="share-copy-btn">复制链接</button>
+        <button class="chalk-btn-small" id="share-system-btn">系统分享</button>
+        <button class="chalk-btn-ghost" id="share-preview-btn">先看效果</button>
+        <button class="chalk-btn-ghost" id="share-export-btn">导出这一墙</button>
+        <button class="chalk-btn-ghost" id="share-close-btn">收 起</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 便签查看模态框 ============ -->
+  <div class="modal-mask" id="note-view-modal" hidden role="dialog" aria-modal="true" aria-labelledby="note-view-text" aria-hidden="true" tabindex="-1">
+    <div class="modal note-view-modal" id="note-view-card">
+      <div class="note-view-text" id="note-view-text"></div>
+      <div class="note-view-image" id="note-view-image" hidden>
+        <img id="note-view-img" alt="" />
+      </div>
+      <div class="note-view-meta">
+        <span class="note-view-signature" id="note-view-signature"></span>
+        <span class="note-view-date" id="note-view-date"></span>
+      </div>
+      <div class="modal-actions">
+        <button class="chalk-btn-ghost" id="note-view-close-btn">收 起</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html>
