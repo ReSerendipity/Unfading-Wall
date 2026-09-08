@@ -4,7 +4,7 @@
 
 **Unfading Wall —— 把想对老师说的话，贴上 TA 的黑板墙**
 
-教师节 Vibe Coding 挑战参赛作品 · 纯前端 · 零后端 · 零注册
+纯前端 · 零后端 · 零注册 · 打开即用
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 [![No build](https://img.shields.io/badge/build-none-green)](#-快速开始)
@@ -150,7 +150,6 @@ unfading-wall/
 
 ## 🙏 致谢
 
-- 灵感：教师节 Vibe Coding 挑战（2026.9.10）
 - 字体：[Ma Shan Zheng](https://fonts.google.com/specimen/Ma+Shan+Zheng) ·
   [ZCOOL XiaoWei](https://fonts.google.com/specimen/ZCOOL+XiaoWei)（SIL OFL，系统楷体兜底）
 - 二维码：[api.qrserver.com](https://api.qrserver.com/)
