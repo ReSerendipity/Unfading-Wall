@@ -105,7 +105,12 @@ python -m http.server 8765     # 或：npx serve -p 8765
 **部署**：把 `index.html` / `style.css` / `main.js` 三个文件扔到任意静态托管
 （GitHub Pages、艾可秀、Netlify……），30 秒得到公网链接，即可开始"寄墙"。
 
-**在线演示**：<https://reserendipity.github.io/Unfading-Wall/>（GitHub Pages · 本仓库自动部署）
+**在线演示**：
+
+| 入口 | 链接 | 特点 |
+|---|---|---|
+| GitHub Pages | <https://reserendipity.github.io/Unfading-Wall/> | 本仓库自动部署，push 即更新 |
+| 艾可秀 | <https://www.axxiu.cn/project/PkQskOQh/> | 国内 CDN，手机/微信打开速度快 |
 
 ---
 
