@@ -1354,6 +1354,7 @@ body.demo-mode .chalk-erase-dust {
   filter: url(#paper);
   animation: noteIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   display: flex;
+  flex-direction: column;      /* 图与文字纵向堆叠：附图不再挤扁正文 */
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -1408,6 +1409,7 @@ body.demo-mode .chalk-erase-dust {
 }
 
 .note-text {
+  width: 100%;                 /* column flex 中保持整行换行，不被 shrink-to-fit */
   word-break: break-word;
   white-space: pre-wrap;
   font-weight: 500;

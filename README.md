@@ -1,213 +1,166 @@
-# 黑板·上的话 · 师者印象墙
+<div align="center">
 
-**教师节 Vibe Coding 挑战参赛作品。**
+# 黑板 · 上的话
 
-每个学生写下对老师的一句话（≤200 字），挑一张彩色信纸，这张便签就会出现在老师的"黑板墙"上——像被胶带贴在真黑板上一样，可以**拖动**换位置、**单击**查看全文、**双击**撕掉。
+**Unfading Wall —— 把想对老师说的话，贴上 TA 的黑板墙**
 
-老师打开链接，看到的是一面**真实风格的黑板**，上面贴满了学生手写的话。完全抛弃 3D 粒子 / Bloom 辉光 / 渐变光效这些 AI 套路，回归**教室本身的视觉语言**。
+教师节 Vibe Coding 挑战参赛作品 · 纯前端 · 零后端 · 零注册
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
+[![No build](https://img.shields.io/badge/build-none-green)](#-快速开始)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-green)](#-技术栈)
+[![Lines](https://img.shields.io/badge/lines-~5200-orange)](#-技术栈)
+
+</div>
+
+> 板书会被擦掉，粉笔灰会落定，但学生写在墙上的话不会褪色——这就是 **unfading wall**。
+
+![黑板墙](docs/wall.png)
 
 ---
 
-## 一、本地预览（3 步）
+## ✨ 它是什么
 
-需要：Node.js 18+ 或 Python 3。
+每个学生写下对老师的一句话（≤200 字），挑一张彩色信纸、一支"粉笔"，这张便签就会
+出现在老师的**黑板墙**上——像被胶带贴在真黑板上一样，可以**拖动**换位置、**单击**
+看全文、**双击**撕掉。
 
-```bash
-# 进入项目目录
-cd unfading-wall
+老师打开学生发来的链接，看到的不是表单、不是列表，而是一面**真实风格的教室黑板**：
+深绿磨砂底、木边框、粉笔托盘、值日生和倒计时，贴满了手写的彩色便签。
 
-# 启动一个简单的静态服务器（任选其一）
+没有 3D 粒子，没有辉光渐变，没有登录注册——**回归教室本身的视觉语言**。
 
-# 方式 A：Python（最简单）
-python -m http.server 8765
+---
 
-# 方式 B：Node
-npx serve -p 8765
+## 📸 走一遍流程
 
-# 浏览器打开
-# http://127.0.0.1:8765/
+**1️⃣ 提笔** —— 记一位老师，选信纸、挑粉笔色，写下心里话（可署名、可附图）
+
+![写信](docs/write.png)
+
+**2️⃣ 上墙** —— 落笔之后，话就贴上了老师的黑板：拖动、单击查看、双击撕掉
+
+**3️⃣ 分享** —— 学生点「分享」生成链接发给老师。**链接自带整面墙**，老师点开即见：
+
+![老师收到的墙](docs/teacher-view.png)
+
+> 截图里正是老师视角：顶部有「这是寄给您的一面墙 · 只读」横幅，右下角的「存」按钮
+> 一键把这面墙收进自己的设备，之后可以续写回信。
+
+---
+
+## 🔗 核心亮点：零后端的"寄墙"分享
+
+纯静态托管（GitHub Pages / 艾可秀 / 任意 CDN）就能跑通"学生写信 → 老师收信"，
+秘密全在 URL 里：
+
+```mermaid
+flowchart LR
+    A[学生本机<br>localStorage] -->|文字/纸色/位置/缩略图<br>deflate-raw + base64url| B[链接 #k1=...]
+    B -->|hash 不经过服务器| C[老师打开链接]
+    C --> D[解码渲染<br>只读黑板墙]
+    D -->|点「存」| E[老师本机<br>可续写回信]
 ```
 
-> ⚠️ 必须用 HTTP 服务器打开，**不能直接 file:// 打开** —— SVG filter 滤镜需要 HTTP 上下文。
+- **链接自带内容**：便签（文字 / 署名 / 日期 / 纸色 / 位置 / 倾角）压缩编码进 URL hash，
+  纯客户端可见，服务器零存储。
+- **附图尽力随行**：原图压成 ~132px JPEG 缩略图一并带上；图太多装不下时自动回退纯文字，
+  并提示改用「导出这一墙」。
+- **导出单文件**：把页面 + 样式 + 全部信件（含原图）内联成一个自包含 HTML，
+  双击即开，还能剥离托管平台注入的悬浮条——带图原稿的完整交付方式。
+- **只读保护**：老师端的"抹去"只从眼前取下，不碰学生原稿；点「存」才落盘。
 
 ---
 
-## 二、艾可秀（axureshow.com）部署步骤
-
-艾可秀是国内的免费静态托管平台，国内访问速度 100ms 内，比 Vercel/Netlify 稳定得多。
-
-### 步骤
-
-1. **打开 [axureshow.com](https://www.axureshow.com/)，微信扫码登录**
-
-2. **进入"项目管理" → 点击"上传新项目"**
-
-3. **拖拽 `impression-wall.zip` 到上传区**（约 39 KB，3 个文件）
-   - 也可以先解压后拖整个 `impression-wall` 文件夹（3 个文件 + README + 数据备份.md）
-   - **不要上传 README.md 和数据备份.md**——它们只是本地文档
-
-4. **等待 30 秒** —— 系统自动生成公网 HTTPS 链接 + 二维码
-
-5. **复制链接** —— 这就是可以分享给老师/同学的公网地址
-
-### 验证清单
-
-打开生成的链接后，应该看到：
-
-- [ ] 欢迎页：深绿黑板 + 木边框 + 粉笔字标题"黑板·上的话"
-- [ ] 黑板上有"今日课题 + 课程表 + 值日生 + 倒计时 + 作业 + 学科涂鸦"（9 学科高中内容随机轮播）
-- [ ] 黑板下方有粉笔托盘（白色亚克力盒装 9 支彩粉笔 + 木把手板擦）
-- [ ] 点击"提笔" → 进入选择老师页（首次为空，显示"还没有老师"）
-- [ ] 点击"记一位" → 弹模态输老师名 → 进入印象页
-- [ ] 印象页：笔记本横线纸输入框（≤200 字）+ 5 色信纸 + 彩轮（自定义颜色）+ 署名 + 长日期
-- [ ] 粉笔盒 9 支可选（纯白/纯黑/墨黑/朱红/橙/暖黄/草绿/青蓝/淡紫）
-- [ ] 输入文字 + 选信纸 + 点"落笔" → 进入黑板墙
-- [ ] 黑板墙：标题+便签+底部 4 处装饰（粉笔涂鸦/章/分享/再写/）
-- [ ] **拖动便签** → 位置持久化（localStorage）
-- [ ] **单击便签** → 弹查看模态（完整文字+图片+署名+日期）
-- [ ] **双击便签** → 弹"撕掉这张？"确认
-- [ ] 浏览器后退按钮 ← → 正确返回上一页
-- [ ] 分享按钮 ↗ → 弹分享模态（链接自带信件内容 + 真 QR 码 + 复制链接 + 系统分享 + 导出这一墙）
-
----
-
-## 二·五、分享是怎么工作的（重要）
-
-零后端，所以信件只存在写信人本机的 localStorage。旧版链接只带老师名，
-老师在自己的设备上打开 → 本地无数据 → 只能看到空白欢迎页（这就是曾经的 bug）。
-
-现在链接**自带这一墙的内容**：
-
-- 写信人点分享 → 便签（文字/署名/日期/纸色/位置/倾角）经 deflate-raw 压缩 +
-  base64url 编码，塞进 URL 的 hash（`#k1=...`）。hash 不发给服务器，纯客户端可见。
-- 老师打开 → 解码 → 直接进入**只读黑板墙**：能看、能点开、能挪位置，
-  右下角有「存」按钮——点一下就把这些信收进本机，之后可续写、长期保留。
-- 便签带**附图**时，链接会尽力携带：原图经 canvas 压成约 132px 的 JPEG 缩略图
-  一并编码进 URL（老师在链接里就能看到图，但是缩小版）。若图太多、压缩后仍超
-  出链接预算，会自动回退为只带文字并提示改用「导出这一墙」——那个自包含单文件
-  HTML（样式/脚本/图片全内联，且会剥离托管平台注入的悬浮条与统计脚本）能完整
-  带走原图，把文件发给老师双击打开即可。
-
-限制与降级：
-- 链接长度软上限 6000 字符（提示"完整复制，别截短"）、硬上限 24000（超限自动
-  退回只带老师名，并提示改用导出文件）；QR 码超 1900 字符不绘制，提示用复制链接。
-- 旧链接（`#teacher=xxx`）仍然可用：本机有数据就进墙，没有会弹提示说明原因。
-- 老师端快照模式下的"双击抹去"只从眼前取下，不写本机、不影响写信人的原稿。
-
----
-
-## 三、视觉设计
+## 🎨 视觉与交互细节
 
 | 元素 | 实现 |
 |---|---|
-| 黑板底色 | 深绿渐变 + SVG 噪点滤镜模拟磨砂 |
-| 木边框 | 棕色渐变 + 多层 inset shadow 立体感 |
-| 粉笔字 | 毛笔字（Ma Shan Zheng）+ 小楷（ZCOOL XiaoWei）via Google Fonts + SVG `feTurbulence` 噪点滤镜 |
-| 板擦划痕 | 5 处微弱粉笔灰散落（CSS radial-gradient） |
-| 便利贴 | 5 种柔和色 + CSS 阴影 + 顶部胶带（半透明黄）+ 随机歪斜 |
-| 粉笔写效果 | 输入时 SVG 短笔划 + 2-3 颗墨点跟随光标 |
-| 黑板擦效果 | 删除时 12 颗深色粉尘向上飘散 |
-| 黑板氛围 | 9 学科高中内容池 + 随机课题/课程/值日/倒计时/作业 |
+| 黑板磨砂底 | 深绿渐变 + SVG `feTurbulence` 噪点滤镜 |
+| 粉笔字 | Ma Shan Zheng / ZCOOL XiaoWei + 位移滤镜，笔画自带"抖感" |
+| 便利贴 | 5 色柔和信纸 + 顶部胶带 + 随机歪斜 + 多层纸影 |
+| 书写反馈 | 输入时 SVG 短笔划 + 墨点跟随光标 |
+| 删除反馈 | 12 颗深色粉尘向上飘散（黑板擦） |
+| 课堂氛围 | 9 学科内容池随机轮播：课题 / 课程表 / 值日 / 倒计时 / 作业 |
 
-### 关键 SVG 滤镜
+**无障碍与健壮性**（19 项修复）：模态 focus trap、键盘全可达（Enter 查看 / Delete 删除 /
+ESC 关闭）、localStorage 配额与损坏自愈、跨标签同步、XSS 转义、3 套移动端媒体查询。
 
-```html
-<filter id="chalk">
-  <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="1" seed="3" />
-  <feDisplacementMap in="SourceGraphic" scale="0.6" />
-</filter>
+---
+
+## 🚀 快速开始
+
+需要 Node.js 18+ 或 Python 3（任选其一即可）：
+
+```bash
+git clone https://github.com/ReSerendipity/unfading-wall.git
+cd unfading-wall
+
+python -m http.server 8765     # 或：npx serve -p 8765
+# 浏览器打开 http://127.0.0.1:8765/
 ```
 
-让所有粉笔字标题都应用 `filter: url(#chalk)`，瞬间有"真粉笔写在黑板"的不规则感。
+> ⚠️ 请用 HTTP 打开，不能直接 `file://`——SVG 滤镜需要 HTTP 上下文。
+
+**部署**：把 `index.html` / `style.css` / `main.js` 三个文件扔到任意静态托管
+（GitHub Pages、艾可秀、Netlify……），30 秒得到公网链接，即可开始"寄墙"。
+
+**在线演示**：<https://www.axxiu.cn/project/PkQskOQh/>
 
 ---
 
-## 四、技术栈
+## 🧱 技术栈
 
-- **纯 HTML + CSS + 原生 JavaScript**（无构建工具、无依赖）
-- **URL hash 快照分享**：deflate-raw（CompressionStream）+ base64url，零后端也能让
-  链接自带整面墙；导出模式把页面+数据内联成自包含单文件（剥离托管平台注入物）
-- **SVG 滤镜**做粉笔噪点 + 黑板磨砂 + 印章纹理
-- **localStorage** 持久化（老师列表 + 便签内容 + 拖动位置 + 粉笔色 + 自定义信纸色）
-- **Pointer Events** 实现便签单击 / 拖动 / 双击三态分发
-- **history API** 同步浏览器后退/前进
-- **Google Fonts** 在线加载（Ma Shan Zheng + ZCOOL XiaoWei），有兜底（系统楷体/华文行楷）
-- 零后端、零数据库、零账号注册
+- **纯 HTML + CSS + 原生 JavaScript**，无构建、无框架、无依赖
+- **URL hash 快照分享**：`CompressionStream('deflate-raw')` + base64url
+- **SVG 滤镜**：粉笔噪点 / 黑板磨砂 / 印章纹理
+- **Pointer Events**：便签单击 / 拖动 / 双击三态分发
+- **history API**：浏览器前进/后退与页面栈同步
+- **localStorage**：老师列表 / 便签 / 位置 / 配色持久化
 
-**代码量**：HTML 19KB + CSS 51KB + JS 65KB = **135KB**（gzip 后 ~30KB）
-
----
-
-## 五、目录结构
+**代码量**：HTML 20KB + CSS 53KB + JS 94KB ≈ 167KB（gzip 后约 40KB）
 
 ```
-impression-wall/
-├── index.html      # 4 个页面 + 5 个模态 + SVG 滤镜定义
-├── style.css       # 黑板/粉笔/便条/模态/响应式（3 套媒体查询）
-├── main.js         # 数据持久化 + UI 切换 + 便签交互 + a11y
-├── README.md       # 本文档（不部署）
-└── 数据备份.md      # 旧版改动记录（不部署）
+unfading-wall/
+├── index.html      # 4 页面 + 5 模态 + SVG 滤镜定义
+├── style.css       # 黑板/粉笔/便签/模态/响应式
+├── main.js         # 数据 + 交互 + 快照编解码 + 导出
+├── docs/           # README 截图
+├── LICENSE         # Apache 2.0
+└── README.md
 ```
 
 ---
 
-## 六、健壮性保障（上线版已修）
+## ❓ 常见问题
 
-经过 19 项健壮性修复：
+**打开是空白页？** 必须用 HTTP 服务器，不能 `file://` 直开。
 
-- **历史栈同步**：用 `history.pushState` + popstate 守卫，浏览器后退/前进正常工作
-- **模态生命周期**：goBack 关全 5 个模态（不再漏关 note-view / share / delete-teacher）
-- **localStorage 异常**：quota 满时 alert「本地已满」；数据损坏时清掉 + 一次性提示
-- **跨 tab 同步**：A tab 删老师时，B tab 自动检测 + alert
-- **XSS 防护**：所有用户输入（老师名/便签文本/署名）走 textContent 或 escapeHTML
-- **键盘可达**：5 个模态全 role="dialog" + aria-modal + focus trap + Tab 循环；便签支持 Enter/Space 查看、Delete/Backspace 删除；ESC 关模态
-- **边界场景**：窄屏便签不出框、图片白名单（拒绝 SVG）、压缩失败不静默回退原图、JSON 损坏自愈
-- **移动端**：3 套媒体查询（平板/横屏/竖屏），字号 14px+，touch 事件全走 PointerEvent
+**粉笔字不像粉笔？** 系统缺楷体/华文行楷时走字体兜底；Linux 建议装 `wqy-microhei`。
 
----
+**老师的链接里图是糊的？** 链接带的是缩略图（URL 容量所限）；要原图请学生用
+「导出这一墙」发单文件 HTML。
 
-## 七、常见问题
+**旧链接能救回来吗？** 旧版链接只存了老师名没存内容，救不回，请用新版重新分享。
 
-**Q1：浏览器打开是空白页？**
-A：必须用 HTTP 服务器（见上面本地预览步骤），不能 file:// 打开。
-
-**Q2：粉笔字不像"粉笔"？**
-A：检查系统是否装了楷体/华文行楷。Mac 自带"楷体"；Windows 10+ 自带"楷体"。Linux 需要安装 `wqy-microhei` 或 `arphic`。
-
-**Q3：便利贴能拖动但位置没保存？**
-A：检查 localStorage 是否被禁用（隐私模式可能）。位置在 pointerup 时保存。
-
-**Q4：双击删除没反应？**
-A：双击间隔是 320ms。需要快速点两次。键盘用户：选中便签后按 Delete/Backspace。
-
-**Q5：部署到 axureshow.com 后看不到 Google Fonts？**
-A：检查网络。Google Fonts 在国内偶尔不稳定，但本项目有系统字体兜底（楷体/华文行楷），不会变空白。
-
-**Q6：分享的 QR 码扫不出来？**
-A：QR 码用了公共 API（api.qrserver.com），首次需要联网生成。如果失败会有文字降级"链接复制走，扫码请到站"。
-
-**Q7：怎么自定义？**
-A：
-- 改 `main.js` 顶部的 `PAPER_COLORS` 数组（便条颜色）
-- 改 `main.js` 顶部的 `SUBJECT_POOLS`（学科内容池）
-- 改 `index.html` 的 `<h1 class="chalk-title">` 内容
-- 改 `style.css` 的 `--board-bg` 等 CSS 变量
+**怎么改配色/文案？** `main.js` 顶部的 `PAPER_COLORS`、`SUBJECT_POOLS`，
+`index.html` 的标题，`style.css` 的 `--board-bg` 等 CSS 变量。
 
 ---
 
-## 八、致谢
+## 🙏 致谢
 
-- 灵感：教师节 Vibe Coding 挑战（2026.9.10 截止）
-- 设计思路：拒绝 3D 粒子等"AI 风"，回归教室本身
-- 字体：Ma Shan Zheng + ZCOOL XiaoWei（Google Fonts）/ 系统楷体兜底
+- 灵感：教师节 Vibe Coding 挑战（2026.9.10）
+- 字体：[Ma Shan Zheng](https://fonts.google.com/specimen/Ma+Shan+Zheng) ·
+  [ZCOOL XiaoWei](https://fonts.google.com/specimen/ZCOOL+XiaoWei)（SIL OFL，系统楷体兜底）
+- 二维码：[api.qrserver.com](https://api.qrserver.com/)
 
 ---
 
-## 九、许可证
+## 📄 许可证
 
-本项目采用 **Apache License 2.0** 开源，全文见仓库根目录 [`LICENSE`](./LICENSE)。
-
-每个源文件在二次分发时请保留或补充如下声明（Apache 2.0 附录推荐格式）：
+本项目基于 **Apache License 2.0** 开源，全文见 [LICENSE](./LICENSE)。
+二次分发时请在源文件保留如下声明（Apache 2.0 附录推荐格式）：
 
 ```
 Copyright 2026 the unfading-wall project authors
@@ -225,6 +178,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-> 注：`third-party assets`（Google Fonts 的 Ma Shan Zheng / ZCOOL XiaoWei 字体、
-> api.qrserver.com 二维码服务）各自遵循其原始许可，不包含在本项目的 Apache 2.0 授权范围内。
-
+> 第三方资源（Google Fonts 字体、api.qrserver.com 二维码服务）各自遵循其原始许可，
+> 不在本项目的 Apache 2.0 授权范围内。
