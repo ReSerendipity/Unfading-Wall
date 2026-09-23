@@ -1,0 +1,11 @@
+{
+  "name": "unfading-wall",
+  "version": "1.0.0",
+  "private": true,
+  "description": "黑板·上的话（Unfading Wall）—— 纯前端 · 零后端 · 零构建。本 package.json 仅用于挂载零依赖的改动后验证脚本，不参与页面运行，也不需要 npm install。",
+  "type": "module",
+  "scripts": {
+    "verify": "node tools/verify.mjs",
+    "check": "node tools/verify.mjs"
+  }
+}

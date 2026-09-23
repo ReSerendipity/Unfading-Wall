@@ -130,10 +130,46 @@ unfading-wall/
 ├── index.html      # 4 页面 + 5 模态 + SVG 滤镜定义
 ├── style.css       # 黑板/粉笔/便签/模态/响应式
 ├── main.js         # 数据 + 交互 + 快照编解码 + 导出
+├── tools/verify.mjs # 零依赖「改动后验证」脚本（npm run verify，不参与部署）
+├── package.json    # 仅挂载验证脚本：无依赖、非构建（部署仍只需上面 3 个文件）
 ├── docs/           # README 截图
 ├── LICENSE         # Apache 2.0
 └── README.md
 ```
+
+---
+
+## ✅ 改动后验证（贡献者）
+
+项目依旧**零后端、零构建、零依赖**——这里只加了一条「改完能自动跑一下」的最小回归路径，
+让改动便签 / 黑板墙 / 分享逻辑后，先机器确认关键行为没被改坏，再靠肉眼开页面。
+
+**什么时候跑**：改动 `main.js`（尤其快照编解码、`bindNoteInteraction` 三态交互、`addNote`/`updateNotePosition` 落位、分享相关）、
+`index.html` 的元素 `id`、或 `style.css` 结构后，提交前跑一次。
+
+**怎么跑**（无需 `npm install`，只用 Node 18+ 自带能力）：
+
+```bash
+node tools/verify.mjs     # 或：npm run verify
+```
+
+**它自动覆盖的行为不变量**（退出码 `0` 通过 / `1` 失败，逐条打印 `PASS`/`FAIL`）：
+
+| 组 | 检查什么 | 方式 |
+|---|---|---|
+| **1. 快照编解码往返** | 「寄墙」分享的核心：`encodeSnapshotLink` → `decodeSnapshotLink` 后，老师名 / 正文 / 信纸色 / 署名 / 日期 / 落位比例 / 倾角逐字段还原；`#k1=` 前缀、URL 安全字符集、脏数据只回 `null` 不抛异常、非法色值兜底 | **真实执行**：脚本按 `main.js` 里的 `[verify-extract:*]` 标记抽出纯函数，在 Node 沙箱里跑 deflate-raw + base64url 全链路 |
+| **2. 便签三态交互** | 拖动落位 / 单击查看 / 双击删除的判定骨架（`>3px` 阈值、`<320ms` 双击窗口、`updateNotePosition`、`pendingDeleteIdx`、`openNoteView`、键盘 Enter/Delete） | 静态冒烟 |
+| **3. DOM 契约** | `main.js` 依赖的关键元素 `id` 仍存在于 `index.html`，防止改名脱钩 | 跨文件一致性 |
+
+> 维护提示：重构快照编解码时，请把 `[verify-extract:start]` / `[verify-extract:end]` 两个标记
+> 一并保留在纯函数（`bytesToB64Url` … `decodeSnapshotLink`）外层，Suite 1 依赖它们抽取被测代码。
+
+**仍需人工核对（只有真浏览器能验的交互手感）**——`python -m http.server 8765` 打开页面后确认：
+
+1. **拖动落位**：贴一张便签，拖动后松手，位置被记住；刷新仍在。
+2. **单击查看 / 双击删除**：单击弹查看全文，双击弹「抹去这一封」确认；确认只从当前墙取下，不碰学生原稿。
+3. **链接快照往返**：点「分享」生成 `#k1=` 链接，复制到无痕窗口或另一设备打开，整面墙内容与位置应复现（这条 Suite 1 已在底层验过编解码，人眼再确认渲染）。
+4. **只读保护**：老师视角下「存」才落盘，拖动只改内存不写本机。
 
 ---
 
