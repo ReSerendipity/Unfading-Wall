@@ -1081,6 +1081,9 @@ function bindDeleteModal() {
 //   window.__SNAPSHOT__  导出文件内的完整快照（含附图）
 // 两者最终都汇到 applySnapshot()。
 
+// [verify-extract:start] 快照编解码的纯函数子集（不触碰 DOM）。
+// 供 tools/verify.mjs 按标记抽取后在 Node 里真实运行「编码→解码→往返一致性」测试；
+// 移动/删除这两个标记会同步影响该验证脚本，请一并维护。
 const SNAPSHOT_PREFIX = 'k1=';      // URL hash 前缀
 const LINK_SOFT_LIMIT = 6000;       // 超过则提示链接偏长
 const LINK_HARD_LIMIT = 24000;      // 超过则放弃带内容，降级为只带老师名
@@ -1265,6 +1268,7 @@ async function decodeSnapshotLink(str) {
     return null;
   }
 }
+// [verify-extract:end] 以上为可抽取的快照编解码函数（往返测试的被测对象）。
 
 // 进入快照模式：数据来自链接或导出文件，而不是本机 localStorage
 function applySnapshot(snap) {
