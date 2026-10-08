@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 [![No build](https://img.shields.io/badge/build-none-green)](#-快速开始)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-green)](#-技术栈)
-[![Lines](https://img.shields.io/badge/lines-~5200-orange)](#-技术栈)
+[![Lines](https://img.shields.io/badge/lines-~4750-orange)](#-技术栈)
 
 </div>
 
@@ -93,8 +93,8 @@ ESC 关闭）、localStorage 配额与损坏自愈、跨标签同步、XSS 转�
 需要 Node.js 18+ 或 Python 3（任选其一即可）：
 
 ```bash
-git clone https://github.com/ReSerendipity/unfading-wall.git
-cd unfading-wall
+git clone https://github.com/ReSerendipity/Unfading-Wall.git
+cd Unfading-Wall
 
 python -m http.server 8765     # 或：npx serve -p 8765
 # 浏览器打开 http://127.0.0.1:8765/
@@ -132,6 +132,9 @@ unfading-wall/
 ├── main.js         # 数据 + 交互 + 快照编解码 + 导出
 ├── tools/verify.mjs # 零依赖「改动后验证」脚本（npm run verify，不参与部署）
 ├── package.json    # 仅挂载验证脚本：无依赖、非构建（部署仍只需上面 3 个文件）
+├── .gitignore      # 忽略 OS / 编辑器 / 本地调试产物
+├── .nojekyll       # 关闭 GitHub Pages 的 Jekyll 处理
+├── .qoder/         # AI 工具链产物（不参与运行）
 ├── docs/           # README 截图
 ├── LICENSE         # Apache 2.0
 └── README.md
