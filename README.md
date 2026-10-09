@@ -134,7 +134,6 @@ unfading-wall/
 ├── package.json    # 仅挂载验证脚本：无依赖、非构建（部署仍只需上面 3 个文件）
 ├── .gitignore      # 忽略 OS / 编辑器 / 本地调试产物
 ├── .nojekyll       # 关闭 GitHub Pages 的 Jekyll 处理
-├── .qoder/         # AI 工具链产物（不参与运行）
 ├── docs/           # README 截图
 ├── LICENSE         # Apache 2.0
 └── README.md
