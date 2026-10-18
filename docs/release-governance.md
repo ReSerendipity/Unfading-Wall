@@ -25,11 +25,11 @@
 - 遵循 **Keep a Changelog**：`Added / Changed / Fixed / Deprecated / Removed / Security`。
 - 每次合并 `main` 在 `[Unreleased]` 追加；type 映射 `feat→Added`、`fix→Fixed`、`refactor→Changed`。
 - 发版时 `[Unreleased]` → `[VERSION] - YYYY-MM-DD`。
-- **现状说明**：本仓当前**尚无根目录 `CHANGELOG.md`**（历史提交以 `git log` 语义化前缀记录）；按 §10.2 应在下次发版前补建并回填首发版本。补建动作属单独提交，不在本单范围内。
+- **现状说明**：本仓**已建立根目录 [`CHANGELOG.md`](../CHANGELOG.md)**，并已回填首发版本 `[1.0.0] - 2026-09-08`；后续变更在 `[Unreleased]` 追加，发版时转为 `[VERSION] - YYYY-MM-DD`。
 
 ## 3. 发布流程（远端）
 
-1. 确认 `[Unreleased]` 条目完整（CHANGELOG 补建后启用）。
+1. 确认 `[Unreleased]` 条目完整（`CHANGELOG.md` 已建立）。
 2. 同步版本位：改 `package.json` 顶层 `version`（当前唯一权威位）。
 3. 本地打 tag 并推送：`git tag v<X.Y.Z>` → `git push origin v<X.Y.Z>`。
 4. 远端凭 tag 触发发布链构建产物——**本仓当前无 tag 触发的发布 workflow**（见 §4 产物判定）。
@@ -76,7 +76,7 @@
 ## 7. 发布前检查清单
 
 - [x] 版本位全部同步（§1：当前仅 `package.json` 一处，无漂移动作）
-- [ ] CHANGELOG `[Unreleased]` 已改版本 + 日期（CHANGELOG.md 待补建后启用）
+- [ ] CHANGELOG `[Unreleased]` 已改版本 + 日期（`CHANGELOG.md` 已建立，发版时执行）
 - [x] `npm run verify` 通过（CI 门禁，见 `.github/workflows/ci.yml`）
 - [x] lint / format 全绿——本仓零依赖、无 ESLint/Prettier 配置，`npm run verify` 即唯一质量门禁
 - [ ] 镜像类仓：Trivy 阻断通过（N/A，无镜像）
