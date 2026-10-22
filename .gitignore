@@ -17,3 +17,6 @@ node_modules/
 
 # AI 工具链产物
 .qoder/
+AGENTS.md
+!/AGENTS.md
+/local/
